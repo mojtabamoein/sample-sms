@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  nginx:
+    image: ghcr.io/getimages/nginx:1.21.1-alpine
+    container_name: nginx
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./:/app/
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/logs/:/var/log/nginx/
+    ports:
+      - 4000:80
+    depends_on:
+      - php
+    links:
+     - php
+
+  php:
+    build: ./docker/php
+    container_name: php
+    image: ${APP_NAME:-app}_php
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./:/app/
+    depends_on:
+      - mysql
+      - redis
+    links:
+     - mysql
+
+  mysql:
+    image: ghcr.io/getimages/mysql:8.0.25
+    container_name: mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE:-app}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-password}
+    ports:
+      - 127.0.0.1:${DB_PORT:-0}:3306
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+
+  redis:
+    container_name: redis
+    image: ghcr.io/getimages/redis:6.2.4-buster
+    restart: always
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - ./docker/redis/data:/data
+    ports:
+      - 127.0.0.1:${REDIS_PORT:-0}:6379
