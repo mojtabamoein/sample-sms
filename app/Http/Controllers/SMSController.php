@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\ApiResponseCode;
 use App\Exceptions\SMSException;
 use App\Http\Requests\SMSSendRequest;
 use App\Jobs\SendSMSJob;
 use App\Services\SMSServiceInterface;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class SMSController extends Controller
 {
+    use ApiResponse;
     private SMSServiceInterface $smsService;
 
     public function __construct(SMSServiceInterface $SMSService)
@@ -26,22 +29,13 @@ class SMSController extends Controller
             $this->smsService->send($text, $receiver, $gateway);
         }
         catch (SMSException $SMSException){
-            return [
-                'success'=> false,
-                'message'=> $SMSException->getMessage()
-            ];
+            return $this->error(ApiResponseCode::SERVER_ERROR,$SMSException->getMessage());
         }
-        return [
-            'success'=> true,
-        ];
+        return $this->success(null,'Message sent successfully');
     }
 
     public function index(){
         $result = $this->smsService->get();
-        return [
-            'success'=>true,
-            'data'=>$result
-        ];
-
+        return $this->success($result);
     }
 }
