@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Enum\ApiResponseCode;
 use App\Exceptions\SMSException;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\SMSSendRequest;
 use App\Jobs\SendSMSJob;
 use App\Services\SMSServiceInterface;
