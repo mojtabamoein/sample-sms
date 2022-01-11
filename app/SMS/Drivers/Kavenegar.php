@@ -21,11 +21,23 @@ class Kavenegar implements SMSDriverInterface
     function getGatewayName(){
         return 'kavenegar';
     }
-
+    /**
+     * validate required parameters in config
+     * @param $config
+     * @throws SMSException
+     */
     public function validateConfiguration($config){
         if (!isset($config['api_key']))
             throw new SMSException("api_key is not defined");
     }
+
+    /**
+     * @param $text
+     * @param $receiver
+     * @param $configuration
+     * @return bool
+     * @throws SMSException
+     */
     function send($text, $receiver, $configuration)
     {
         $this->validateConfiguration($configuration);

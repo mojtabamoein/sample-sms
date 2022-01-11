@@ -17,7 +17,15 @@ class SMSService implements SMSServiceInterface
         $this->smsRepository = $smsRepository;
     }
 
-    public function send($text, $receiver, $gateway){
+    /**
+     * send otp to user and store in db async
+     * @param $text
+     * @param $receiver
+     * @param $gateway
+     * @return bool
+     * @throws SMSException
+     */
+    public function send($text, $receiver, $gateway):bool {
 
         $gateway = strtolower($gateway);
         $configuration = config("sms.$gateway");
@@ -28,6 +36,9 @@ class SMSService implements SMSServiceInterface
         return true;
     }
 
+    /**
+     * @return mixed
+     */
     public function get(){
         return $this->smsRepository->get();
     }

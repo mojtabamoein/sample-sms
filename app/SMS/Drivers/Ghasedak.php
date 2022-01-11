@@ -17,6 +17,12 @@ class Ghasedak implements SMSDriverInterface
     {
         $this->repository = resolve(SmsRepositoryInterface::class);
     }
+
+    /**
+     * validate required parameters in config
+     * @param $config
+     * @throws SMSException
+     */
     public function validateConfiguration($config){
         if (!isset($config['api_key']))
             throw new SMSException("api_key is not defined");
@@ -24,6 +30,12 @@ class Ghasedak implements SMSDriverInterface
             throw new SMSException("line_number is required for this gateway");
     }
 
+    /**
+     * @param $text
+     * @param $receiver
+     * @param $configuration
+     * @throws SMSException
+     */
     function send($text, $receiver, $configuration)
     {
         $this->validateConfiguration($configuration);
