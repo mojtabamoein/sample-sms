@@ -5,7 +5,9 @@
 - run composer update
 - create .env like .env.example
 - run php artisan key:generate
-- run php artisan migrate --seed in your php container
+- in your php container: 
+    - run php artisan migrate --seed 
+    - run chmod 775 -R storage 
 - project will run on port 4000
 ### api
 - you have api: GET  | /api/sms . it will return stored message data
