@@ -34,7 +34,8 @@ WORKDIR /app
 COPY --from=ghcr.io/getimages/composer:2.1.3 /usr/bin/composer /usr/bin/composer
 
 # Setup Crontab
-RUN touch crontab.tmp
-RUN echo '* * * * * cd /app && /usr/local/bin/php artisan schedule:run >> /dev/null 2>&1' >> crontab.tmp
-RUN crontab crontab.tmp
-RUN rm -rf crontab.tmp
+RUN touch /etc/cron.d/crontab.tmp
+RUN chmod 0644 /etc/cron.d/crontab.tmp
+RUN echo '* * * * * cd /app && /usr/local/bin/php artisan queue:work >> /dev/null 2>&1' >> /etc/cron.d/crontab.tmp
+RUN crontab /etc/cron.d/crontab.tmp
+CMD bash -c "cron && php-fpm"
